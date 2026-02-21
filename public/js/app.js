@@ -7,11 +7,43 @@ let cart = {
 let menuItems = [];
 let currentComboPrice = 0;
 
+// Kiểm tra và ẩn loading screen
+let loadingAttempts = 0;
+const maxLoadingAttempts = 30; // 30 giây
+
+function checkDataLoaded() {
+  loadingAttempts++;
+  
+  if (menuItems.length > 0) {
+    // Dữ liệu đã load xong
+    hideLoadingScreen();
+  } else if (loadingAttempts < maxLoadingAttempts) {
+    // Thử lại sau 1 giây
+    setTimeout(checkDataLoaded, 1000);
+  } else {
+    // Timeout, vẫn ẩn loading screen
+    hideLoadingScreen();
+  }
+}
+
+function hideLoadingScreen() {
+  const loadingScreen = document.getElementById('loading-screen');
+  if (loadingScreen) {
+    loadingScreen.classList.add('hidden');
+  }
+}
+
 // Load menu khi trang được tải
 document.addEventListener('DOMContentLoaded', async () => {
+  // Bắt đầu kiểm tra loading
+  checkDataLoaded();
+  
   await loadMenu();
   setupEventListeners();
   updateCartCount();
+  
+  // Ẩn loading screen sau khi load xong
+  hideLoadingScreen();
 });
 
 // Load menu từ API
