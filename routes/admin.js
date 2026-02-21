@@ -128,4 +128,18 @@ router.post('/orders/:id/complete', isAuthenticated, async (req, res) => {
   }
 });
 
+// Hủy đơn hàng
+router.post('/orders/:id/cancel', isAuthenticated, async (req, res) => {
+  try {
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status: 'cancelled' },
+      { new: true }
+    );
+    res.json({ message: 'Đã hủy đơn hàng', order });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 module.exports = router;

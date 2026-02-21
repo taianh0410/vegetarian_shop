@@ -406,6 +406,9 @@ function displayOrders(orders) {
         <button class="btn btn-success" onclick="completeOrder('${order._id}')">
           ✓ Đã Hoàn Thành
         </button>
+        <button class="btn btn-danger" onclick="cancelOrder('${order._id}')">
+          ✕ Hủy Đơn
+        </button>
       </div>
     `;
     
@@ -423,30 +426,53 @@ async function completeOrder(orderId) {
     });
 
     if (response.ok) {
-      // Thêm hiệu ứng fade out
-      const orderCard = document.getElementById(`order-${orderId}`);
-      orderCard.style.transition = 'opacity 0.5s, transform 0.5s';
-      orderCard.style.opacity = '0';
-      orderCard.style.transform = 'translateX(100px)';
-      
-      // Xóa khỏi DOM sau khi animation xong
-      setTimeout(() => {
-        orderCard.remove();
-        
-        // Kiểm tra nếu không còn đơn hàng nào
-        const ordersList = document.getElementById('orders-list');
-        if (ordersList.children.length === 0) {
-          ordersList.innerHTML = '<p style="text-align: center; color: #999;">Chưa có đơn hàng nào</p>';
-        }
-      }, 500);
-      
-      // Hiển thị thông báo
-      showNotification('✅ Đã đánh dấu hoàn thành');
+      removeOrderWithAnimation(orderId, '✅ Đã đánh dấu hoàn thành');
     }
   } catch (error) {
     console.error('Lỗi:', error);
     alert('Có lỗi xảy ra');
   }
+}
+
+// Hủy đơn hàng
+async function cancelOrder(orderId) {
+  if (!confirm('Xác nhận HỦY đơn hàng này?')) return;
+
+  try {
+    const response = await fetch(`/api/admin/orders/${orderId}/cancel`, {
+      method: 'POST'
+    });
+
+    if (response.ok) {
+      removeOrderWithAnimation(orderId, '🚫 Đã hủy đơn hàng');
+    }
+  } catch (error) {
+    console.error('Lỗi:', error);
+    alert('Có lỗi xảy ra');
+  }
+}
+
+// Xóa đơn hàng với animation
+function removeOrderWithAnimation(orderId, message) {
+  // Thêm hiệu ứng fade out
+  const orderCard = document.getElementById(`order-${orderId}`);
+  orderCard.style.transition = 'opacity 0.5s, transform 0.5s';
+  orderCard.style.opacity = '0';
+  orderCard.style.transform = 'translateX(100px)';
+  
+  // Xóa khỏi DOM sau khi animation xong
+  setTimeout(() => {
+    orderCard.remove();
+    
+    // Kiểm tra nếu không còn đơn hàng nào
+    const ordersList = document.getElementById('orders-list');
+    if (ordersList.children.length === 0) {
+      ordersList.innerHTML = '<p style="text-align: center; color: #999;">Chưa có đơn hàng nào</p>';
+    }
+  }, 500);
+  
+  // Hiển thị thông báo
+  showNotification(message);
 }
 
 // Hiển thị thông báo tạm thời
