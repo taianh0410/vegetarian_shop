@@ -123,19 +123,4 @@ Server sẽ chạy tại: http://localhost:3000
 - Notifications: Telegram Bot API
 - Security: bcryptjs
 
-## Lưu ý
-
-- Đổi mật khẩu admin trong file .env trước khi deploy
-- Đổi SESSION_SECRET thành chuỗi ngẫu nhiên
-- Nếu không dùng Telegram, có thể bỏ qua cấu hình TELEGRAM_BOT_TOKEN và TELEGRAM_CHAT_ID
-
-## Hỗ trợ
-
-Nếu gặp vấn đề, vui lòng kiểm tra:
-1. MongoDB đã chạy chưa
-2. File .env đã cấu hình đúng chưa
-3. Đã cài đặt đầy đủ dependencies chưa
-
----
-
-Chúc bạn thành công! 🙏
+ 
